@@ -30,3 +30,7 @@ class Inception(BaseModel):
         self.input_size = 299
         num_features = self.model.fc.in_features
         self.model.fc = nn.Linear(num_features, self.n_classes)
+
+    def predict(self, X):
+        predictions = self.model(X)[0] if self.model.training else self.model(X)
+        return predictions
