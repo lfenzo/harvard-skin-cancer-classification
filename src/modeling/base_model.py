@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 import torch
 from torch import nn
 
@@ -31,6 +34,12 @@ class BaseModel(nn.Module):
             valid_loss, valid_acc = self.evaluate(loader=valid_loader, criterion=criterion)
             self.loss_valid_history.append(valid_loss)
             self.acc_valid_history.append(valid_acc)
+
+    def save(self, directory: str = "models") -> None:
+        model_date = datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+        model_file = f"{self.model.__class__.__name__}_{model_date}.pth"
+        self.model = self.model.to(torch.device("cpu"))
+        torch.save(self.model.state_dict(), os.path.join(directory, model_file))
 
     def evaluate(self, loader, criterion):
         self.model.eval()
